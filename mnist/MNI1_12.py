@@ -53,24 +53,6 @@ def image_translation(img, params):
     dst = cv2.warpAffine(img,M,(28,28))
     return dst
 
-def image_scale(img, params):
-
-    res = cv2.resize(img,None,fx=params[0], fy=params[1], interpolation = cv2.INTER_CUBIC)
-    return res
-
-def image_shear(img, params):
-#     rows,cols,ch = img.shape
-    factor = params*(-1.0)
-    M = np.float32([[1,factor,0],[0,1,0]])
-    dst = cv2.warpAffine(img,M,(28,28))
-    return dst
-
-def image_rotation(img, params):
-#     rows,cols,ch = img.shape
-    M = cv2.getRotationMatrix2D((cols/2,rows/2),params,1)
-    dst = cv2.warpAffine(img,M,(28,28))
-    return dst
-
 def image_moveBlur(image, degree):
     image = np.array(image)
     angle = 45
@@ -165,10 +147,6 @@ def gen_candidate_set(random_ways):
             params = p
             gen_image = image_blur(seed_image,params)
             candidate_set[random_way] = gen_image
-#         if way == "scale":
-#             params = [p*0.5+1, p*0.5+1]
-#             gen_image = image_scale(seed_image,params)
-#             candidate_set[random_way] = gen_image
 
     return candidate_set
 
@@ -208,10 +186,8 @@ if __name__ == "__main__":
         for item in range(0,2000):
         #     generate candidate_set and executed_set
             file_seed_path = "./seeds/1/"
-            file_error_path = "./gen_images/error/1/"
             file_correct_path = "./gen_images/correct/1/"
             file_total_path = "./gen_images/total/1/"
-            failure_set = []
             executed_set = []
             candidate_set = []
             files=os.listdir(file_correct_path)
@@ -239,18 +215,12 @@ if __name__ == "__main__":
                 for i in range(1,9):
                     name = 'blur'+'_'+str(i)+'_'+str(file)
                     input_domain.append(name)
-    #             for i in range(1,11):
-    #                 name = 'scale'+'_'+str(i)+'_'+str(file)
-    #                 input_domain.append(name)
 
 
 
         # caculate F-meatures, the counts of failures
             F_meatures = 1
             error_count = 1
-            failure_set = []
-            for file in os.listdir("./gen_images/error/1"):
-                failure_set.append(file)
             reveal_failure = False
             #   generate executed_matrix to caculate the distance
             myClass5_3=FeatureVisualization(12)
