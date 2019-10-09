@@ -63,24 +63,6 @@ def image_translation(img, params):
     dst = cv2.warpAffine(img,M,(cols,rows))
     return dst
 
-def image_scale(img, params):
-
-    res = cv2.resize(img,None,fx=params[0], fy=params[1], interpolation = cv2.INTER_CUBIC)
-    return res
-
-def image_shear(img, params):
-    rows,cols,ch = img.shape
-    factor = params*(-1.0)
-    M = np.float32([[1,factor,0],[0,1,0]])
-    dst = cv2.warpAffine(img,M,(cols,rows))
-    return dst
-
-def image_rotation(img, params):
-    rows,cols,ch = img.shape
-    M = cv2.getRotationMatrix2D((cols/2,rows/2),params,1)
-    dst = cv2.warpAffine(img,M,(cols,rows))
-    return dst
-
 def image_motionBlur(image, degree):
     image = np.array(image)
     angle = 45
@@ -178,10 +160,6 @@ def gen_candidate_set(random_ways):
             params = p
             gen_image = image_blur(seed_image,params)
             candidate_set[random_way] = gen_image
-        if way == "scale":
-            params = [p*0.5+1, p*0.5+1]
-            gen_image = image_scale(seed_image,params)
-            candidate_set[random_way] = gen_image
         
     return candidate_set
 
@@ -245,15 +223,8 @@ if __name__ == "__main__":
             files_executed = random.sample(files, k=400)
             for f in files_executed:
                 executed_set.append(os.path.join(file_correct_path,f))
-
-            seed_inputs1 = "../Dataset/hmb3/"
-            seed_labels1 = "../Dataset/hmb3/hmb3_steering.csv"
             seed_inputs2 = "../Dataset/Ch2_001/center/"
             seed_labels2 = "../Dataset/Ch2_001/CH2_final_evaluation.csv"
-            filelist1 = []
-            for file in sorted(os.listdir(seed_inputs1)):
-                if file.endswith(".jpg"):
-                    filelist1.append(file)
 
             filelist2 = []
             for file in sorted(os.listdir(seed_inputs2)):
@@ -277,9 +248,7 @@ if __name__ == "__main__":
                      if i != 5 and i != 8:
                          name = 'blur'+'_'+str(i)+'_'+str(file)
                          input_domain.append(name)
-#                for i in range(1,11):
-#                    name = 'scale'+'_'+str(i)+'_'+str(file)
-#                     input_domain.append(name)
+
 
 
 
@@ -287,19 +256,7 @@ if __name__ == "__main__":
             F_meatures = 1
             error_count = 1
             reveal_failure = False
-#             #   generate executed_matrix to caculate the distance
-#             myClass5_3=FeatureVisualization(12)
-#             #       the size of executed_set is k=10
-#             executed_set = random.sample(executed_set,10)
-#             executed_matrix = np.zeros([1,3136])
-#             for executed_file in executed_set:
-#                 executed_image=cv2.imread(executed_file)
-#                 feature5_3 = myClass5_3.save_feature_to_img(executed_image)
-#                 matrix = feature5_3.reshape(1,3136)
-#                 executed_matrix = np.concatenate((executed_matrix,matrix),axis=0)
-    #             print(executed_matrix.shape)
             while reveal_failure == False:
-        #       the size of candidate_set is k=10
                 random_ways = random.sample(input_domain,k=1)
                 candidate_set = gen_candidate_set(random_ways)
                 best_test = random.sample(candidate_set,k=1)[0]

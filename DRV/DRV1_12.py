@@ -64,24 +64,6 @@ def image_translation(img, params):
     dst = cv2.warpAffine(img,M,(cols,rows))
     return dst
 
-def image_scale(img, params):
-
-    res = cv2.resize(img,None,fx=params[0], fy=params[1], interpolation = cv2.INTER_CUBIC)
-    return res
-
-def image_shear(img, params):
-    rows,cols,ch = img.shape
-    factor = params*(-1.0)
-    M = np.float32([[1,factor,0],[0,1,0]])
-    dst = cv2.warpAffine(img,M,(cols,rows))
-    return dst
-
-def image_rotation(img, params):
-    rows,cols,ch = img.shape
-    M = cv2.getRotationMatrix2D((cols/2,rows/2),params,1)
-    dst = cv2.warpAffine(img,M,(cols,rows))
-    return dst
-
 def image_motionBlur(image, degree):
     image = np.array(image)
     angle = 45
@@ -177,10 +159,6 @@ def gen_candidate_set(random_ways):
             params = p
             gen_image = image_blur(seed_image,params)
             candidate_set[random_way] = gen_image
-        if way == "scale":
-            params = [p*0.5+1, p*0.5+1]
-            gen_image = image_scale(seed_image,params)
-            candidate_set[random_way] = gen_image
         
     return candidate_set
 
@@ -244,14 +222,8 @@ with open('./ART_result/DRV1_12_'+now_time+'art.csv', 'wb',0) as csvfile:
         for f in files_executed:
             executed_set.append(os.path.join(file_correct_path,f))
 
-        seed_inputs1 = "../Dataset/hmb3/"
-        seed_labels1 = "../Dataset/hmb3/hmb3_steering.csv"
         seed_inputs2 = "../Dataset/Ch2_001/center/"
         seed_labels2 = "../Dataset/Ch2_001/CH2_final_evaluation.csv"
-        filelist1 = []
-        for file in sorted(os.listdir(seed_inputs1)):
-            if file.endswith(".jpg"):
-                filelist1.append(file)
 
         filelist2 = []
         for file in sorted(os.listdir(seed_inputs2)):
@@ -273,9 +245,6 @@ with open('./ART_result/DRV1_12_'+now_time+'art.csv', 'wb',0) as csvfile:
                 if i != 5 and i != 8:
                     name = 'blur'+'_'+str(i)+'_'+str(file)
                     input_domain.append(name)
-#            for i in range(1,11):
-#                name = 'scale'+'_'+str(i)+'_'+str(file)
-#                input_domain.append(name)
 
 
 
