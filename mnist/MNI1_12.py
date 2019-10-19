@@ -235,7 +235,7 @@ if __name__ == "__main__":
     #             print(executed_matrix.shape)
             while reveal_failure == False:
         #       the size of candidate_set is k=10
-                random_ways = random.sample(input_domain,k=5)
+                random_ways = random.sample(input_domain,k=10)
                 candidate_set = gen_candidate_set(random_ways)
                 best_test = select_best_test(executed_matrix,candidate_set)
                 print(best_test)
